@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Animado Mejorado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #left-eye, #right-eye, #mouth {
+            transition: all 0.3s ease;
+        }
+        #face {
+            transition: fill 0.5s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <svg id="face" class="mx-auto mb-6" width="120" height="120" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="50" fill="#ffeb3b" />
+            <g id="eyes">
+                <ellipse id="left-eye" cx="35" cy="40" rx="8" ry="10" fill="black" />
+                <ellipse id="right-eye" cx="65" cy="40" rx="8" ry="10" fill="black" />
+                <circle cx="33" cy="38" r="3" fill="white" />
+                <circle cx="63" cy="38" r="3" fill="white" />
+            </g>
+            <path id="mouth" d="M 35 70 Q 50 85 65 70" fill="none" stroke="black" stroke-width="5" />
+        </svg>
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h2>
+        <input id="username" type="text" placeholder="Usuario" autocomplete="off" 
+               class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <input id="password" type="password" placeholder="Contraseña" 
+               class="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button onclick="validateLogin()" 
+                class="w-full p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+            Iniciar Sesión
+        </button>
+    </div>
+
+    <script>
+        const leftEye = document.getElementById('left-eye');
+        const rightEye = document.getElementById('right-eye');
+        const mouth = document.getElementById('mouth');
+        const face = document.getElementById('face');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // Seguir el cursor en el campo de usuario con suavidad
+        usernameInput.addEventListener('mousemove', (e) => {
+            const rect = usernameInput.getBoundingClientRect();
+            const x = (e.clientX - rect.left - rect.width / 2) / 20;
+            const y = (e.clientY - rect.top - rect.height / 2) / 20;
+            leftEye.setAttribute('cx', 35 + x);
+            rightEye.setAttribute('cx', 65 + x);
+            leftEye.setAttribute('cy', 40 + y);
+            rightEye.setAttribute('cy', 40 + y);
+        });
+
+        // Animación para el campo de contraseña
+        let isEyesClosed = false;
+        passwordInput.addEventListener('focus', () => {
+            if (!isEyesClosed) {
+                // Ojos abiertos mirando el campo
+                leftEye.setAttribute('rx', 8);
+                rightEye.setAttribute('rx', 8);
+                leftEye.setAttribute('ry', 10);
+                rightEye.setAttribute('ry', 10);
+                mouth.setAttribute('d', 'M 35 70 Q 50 85 65 70');
+                face.setAttribute('fill', '#ffeb3b');
+                setTimeout(() => {
+                    // Cerrar ojos
+                    leftEye.setAttribute('ry', 2);
+                    rightEye.setAttribute('ry', 2);
+                    mouth.setAttribute('d', 'M 35 70 Q 50 70 65 70');
+                    isEyesClosed = true;
+                }, 1000);
+            }
+        });
+
+        // Restaurar ojos al salir del campo
+        passwordInput.addEventListener('blur', () => {
+            leftEye.setAttribute('rx', 8);
+            rightEye.setAttribute('rx', 8);
+            leftEye.setAttribute('ry', 10);
+            rightEye.setAttribute('ry', 10);
+            mouth.setAttribute('d', 'M 35 70 Q 50 85 65 70');
+            face.setAttribute('fill', '#ffeb3b');
+            isEyesClosed = false;
+        });
+
+        // Validar login
+        function validateLogin() {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+            if (username === 'admin' && password === 'password') {
+                // Cara de guiño con cambio de color
+                leftEye.setAttribute('ry', 2);
+                rightEye.setAttribute('ry', 10);
+                mouth.setAttribute('d', 'M 35 70 Q 50 85 65 70');
+                face.setAttribute('fill', '#4ade80');
+                setTimeout(() => {
+                    face.setAttribute('fill', '#ffeb3b');
+                    leftEye.setAttribute('ry', 10);
+                }, 1000);
+                alert('¡Login exitoso!');
+            } else {
+                // Cara triste con cambio de color
+                leftEye.setAttribute('rx', 8);
+                leftEye.setAttribute('ry', 10);
+                rightEye.setAttribute('rx', 8);
+                rightEye.setAttribute('ry', 10);
+                mouth.setAttribute('d', 'M 35 80 Q 50 65 65 80');
+                face.setAttribute('fill', '#f87171');
+                isEyesClosed = false;
+                setTimeout(() => {
+                    // Restaurar cara neutral
+                    mouth.setAttribute('d', 'M 35 70 Q 50 85 65 70');
+                    face.setAttribute('fill', '#ffeb3b');
+                }, 2000);
+                alert('Usuario o contraseña incorrectos');
+            }
+        }
+
+        // Parpadeo aleatorio
+        setInterval(() => {
+            if (!isEyesClosed && Math.random() > 0.9) {
+                leftEye.setAttribute('ry', 2);
+                rightEye.setAttribute('ry', 2);
+                setTimeout(() => {
+                    leftEye.setAttribute('ry', 10);
+                    rightEye.setAttribute('ry', 10);
+                }, 200);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
